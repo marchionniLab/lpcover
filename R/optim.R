@@ -5,6 +5,12 @@
 
 cover_gurobi = function(mat, alpha=0.05, maxsol=100, J=1){
   
+  if(! "gurobi" %in% names(sessionInfo()$otherPkgs)){
+    
+    # ERROR
+    
+  }
+  
   n = ncol(mat)
   m = nrow(mat)
   
@@ -54,6 +60,12 @@ cover_gurobi = function(mat, alpha=0.05, maxsol=100, J=1){
 
 cover_lpSolve = function(mat, alpha=0.05, maxsol=100, J=1){
   
+  if(! "lpSolve" %in% names(sessionInfo()$otherPkgs)){
+    
+    # ERROR
+    
+  }
+  
   n = ncol(mat)
   m = nrow(mat)
   
@@ -74,7 +86,9 @@ cover_lpSolve = function(mat, alpha=0.05, maxsol=100, J=1){
          const.mat=C,
          const.dir=sense,
          const.rhs=rhs,
-         binary.vec=1:length(obj))
+         all.bin=TRUE)
+         
+  list(obj=sum(R$solution[1:ncol(A)]), sol=sol, result=R)
   
 }
 
