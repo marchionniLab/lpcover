@@ -13,8 +13,8 @@
 #' @examples
 #'
 
-computeCovering <- function(mat){
-	getCovering(mat)
+computeCovering <- function(mat, alpha=0.05, maxsol=100, J=1){
+	getCovering(mat=mat, alpha=alpha, maxsol=maxsol, J=J)
 }
 
 # ==================================================================================================
