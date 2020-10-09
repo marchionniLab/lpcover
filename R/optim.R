@@ -58,7 +58,7 @@ cover_gurobi = function(mat, alpha=0.05, maxsol=100, J=1){
 
 # cover a binary set of varibles using lpSolve
 
-cover_lpSolve = function(mat, alpha=0.05, maxsol=100, J=1){
+cover_lpSolve = function(mat, alpha=0.05, maxsol=1, J=1){
   
   if(! "lpSolve" %in% names(sessionInfo()$otherPkgs)){
     
@@ -81,12 +81,17 @@ cover_lpSolve = function(mat, alpha=0.05, maxsol=100, J=1){
   rhs = c(rep(J, nrow(C)-1), alpha * n)
   sense = c(rep('>=', length(rhs)-1), '<=')
   
+  if(maxsol > 1){
+    warning("Returning multiple solutions with lpSolve may take a long time")
+  }
+  
   R = lp(direction="min",
          objective.in=obj,
          const.mat=C,
          const.dir=sense,
          const.rhs=rhs,
-         all.bin=TRUE)
+         all.bin=TRUE,
+         num.bin.solns=maxsol)
          
   list(obj=sum(R$solution[1:ncol(A)]), sol=sol, result=R)
   
