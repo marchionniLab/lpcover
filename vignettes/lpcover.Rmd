@@ -31,7 +31,7 @@ The data preparation step is fairly straightforward, and involves deciding which
 # load divergence package
 library(lpcover)
 
-result.optim = computeMinimalCovering(mat=mat.colon, alpha=0.9, J=2, maxsol=3)
+result.optim = computeMinimalCovering(mat=mat, alpha=0.9, J=2, maxsol=3)
 
 result.optim$sol
 
