@@ -19,7 +19,10 @@ considered as outlier. By default alpha = 0.05, indicating 95% of samples to be 
 that each sample is to be covered with at least one feature.}
 }
 \value{
-A list.
+A list with items "obj": the objective returned by the optimization (as a vector), 
+"sol": a character matrix of solutions, "r": a list where each element contains vectors of 
+results obtained for x and lamba vectors, and "result": the direct output returned by the 
+optimization (by either gurobi or lpSolve).
 }
 \description{
 Function for computing the minimal covering for a given binary data matrix given 
@@ -28,3 +31,5 @@ a minimum proportion of samples to cover
 \examples{
 
 }
+\keyword{cover,}
+\keyword{optimize}

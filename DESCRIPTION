@@ -3,8 +3,8 @@ Title: LPCover: Functionality for integer programming methods for covering
 Version: 0.0.01
 Author: Wikum Dinalankara <wdd4001@med.cornell.edu>, Luigi Marchionni <lum4003@med.cornell.edu>, Qian Ke <qke1@jhu.edu>
 Maintainer: Wikum Dinalankara <wdd4001@med.cornell.edu>
-Description: Gurobi based integer programming functionality for different 'covering' optimizations as presented in Ke et al, "Efficient Representations of Tumor Diversity with Paired DNA-RNA Anomalies".
-Depends: R (>= 3.6), gurobi
+Description: Integer programming functionality for different 'covering' optimizations as presented in Ke et al, "Efficient Representations of Tumor Diversity with Paired DNA-RNA Anomalies".
+Depends: R (>= 3.6), lpSolve
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

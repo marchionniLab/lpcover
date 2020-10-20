@@ -51,6 +51,9 @@ cover_gurobi = function(mat, alpha=0.05, maxsol=100, J=1){
   
   sol = sapply(r, function(x) x$g )
   
+  if(is.vector(sol))
+    sol = matrix(sol, nrow=1)
+  
   list(obj=obj, sol=sol, r=r, result=result)
   
 }
@@ -84,18 +87,40 @@ cover_lpSolve = function(mat, alpha=0.05, maxsol=1, J=1){
   sense = c(rep('>=', length(rhs)-1), '<=')
   
   if(maxsol > 1){
-    warning("Returning multiple solutions with lpSolve may take a long time")
+    print("WARNING: Returning multiple solutions with lpSolve may take a long time")
   }
   
-  R = lp(direction="min",
+  result = lp(direction="min",
          objective.in=obj,
          const.mat=C,
          const.dir=sense,
          const.rhs=rhs,
          all.bin=TRUE,
          num.bin.solns=maxsol)
-         
-  list(obj=sum(R$solution[1:ncol(A)]), sol=sol, result=R)
+  
+  k = m+n
+  
+  r = lapply(1:maxsol, function(j){
+    
+    a = ((j-1) * k) + 1
+    b = j * k
+    u = result$solution[a:b]
+    lsum=sum(u[-c(1:m)])
+    xsum=sum(u[1:m])
+    g=rownames(mat)[which(u[1:m] > .5)]
+    
+    list(lsum=lsum, xsum=xsum, g=g)
+    
+  })
+  
+  obj = sapply(r, function(x) sum(colSums(mat[x$g, , drop=FALSE]) >= J) )
+  
+  sol = sapply(r, function(x) x$g )
+  
+  if(is.vector(sol))
+    sol = matrix(sol, nrow=1)
+  
+  list(obj=obj, sol=sol, r=r, result=result)
   
 }
 
@@ -104,31 +129,57 @@ cover_lpSolve = function(mat, alpha=0.05, maxsol=1, J=1){
 
 # main function
 
-getCovering = function(mat=mat, alpha=alpha, maxsol=maxsol, J=J){
+getCovering = function(mat=mat, alpha=alpha, maxsol=maxsol, J=J, solver=""){
   
   # decide which solver to use
   
-  solver = ""
-  
-  if("gurobi" %in% rownames(installed.packages())){
-    
-   load_package = require("gurobi")
-   if(load_package)
-    solver = "gurobi"
-   
-  }
-  
+  # if a solver is not specified, use gurobi if available, lpSolve if not
   if(solver == ""){
     
+    # try to use gurobi
+    if("gurobi" %in% rownames(installed.packages())){
+    
+      load_package = require("gurobi")
+      if(load_package)
+        solver = "gurobi"
+   
+    }
+    
+    # if that didn't work, try lpSolve
+    if(solver != "gurobi"){
+      if("lpSolve" %in% rownames(installed.packages())){
+      
+        load_package = require("lpSolve")
+        if(load_package)
+          solver = "lpSolve"
+      
+      }
+      
+    }
+    
+  }else if(solver == "gurobi"){
+    # try to use gurobi
+    if("gurobi" %in% rownames(installed.packages())){
+      
+      load_package = require("gurobi")
+      if(load_package)
+        solver = "gurobi"
+      else
+        solver = ""
+      
+    }
+  }else if(solver == "lpSolve"){
     if("lpSolve" %in% rownames(installed.packages())){
       
       load_package = require("lpSolve")
       if(load_package)
         solver = "lpSolve"
+      else
+        solver = ""
       
     }
-    
   }
+  
   
   if(solver == "gurobi"){
     

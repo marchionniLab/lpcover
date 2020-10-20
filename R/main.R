@@ -15,7 +15,7 @@
 #' that each sample is to be covered with at least one feature.
 #'
 #' @return A list with items "obj": the objective returned by the optimization (as a vector), 
-#' "sol": a character matrix of solutions, "r": a list where each element contains vectors of 
+#' "sol": a character matrix of solutions(each column a solution), "r": a list where each element contains vectors of 
 #' results obtained for x and lamba vectors, and "result": the direct output returned by the 
 #' optimization (by either gurobi or lpSolve).
 #'
@@ -25,7 +25,7 @@
 #' @examples
 #'
 
-computeMinimalCovering <- function(mat, alpha=0.05, maxsol=100, J=1){
+computeMinimalCovering <- function(mat, alpha=0.05, maxsol=100, J=1, solver=""){
   
   # check: 
   
@@ -44,12 +44,14 @@ computeMinimalCovering <- function(mat, alpha=0.05, maxsol=100, J=1){
   # mat should be binary, no missing values
   if(! is.matrix(mat))
     stop("ERROR: mat should be a matrix")
-  else if(any(is.na(mat)))
+  
+  if(any(is.na(mat)))
     stop("ERROR: mat cannot have missing values")
-  else if(! all(sort(unique(as.vector(mat))) == c(0, 1)))
+  
+  if(! all(sort(unique(as.vector(mat))) == c(0, 1)))
     stop("ERROR: mat must be binary")
   
-	getCovering(mat=mat, alpha=alpha, maxsol=maxsol, J=J)
+	getCovering(mat=mat, alpha=alpha, maxsol=maxsol, J=J, solver=solver)
   
 }
 
