@@ -14,6 +14,8 @@
 #' @param J The number of times each sample is to be covered. By default J=1, indicating
 #' that each sample is to be covered with at least one feature.
 #'
+#' @param solver A character string indicating whether to use gurobi or lpSolve.
+#'
 #' @return A list with items "obj": the objective returned by the optimization (as a vector), 
 #' "sol": a character matrix of solutions(each column a solution), "r": a list where each element contains vectors of 
 #' results obtained for x and lamba vectors, and "result": the direct output returned by the 
