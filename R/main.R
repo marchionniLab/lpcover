@@ -14,8 +14,12 @@
 #' @param J The number of times each sample is to be covered. By default J=1, indicating
 #' that each sample is to be covered with at least one feature.
 #'
-#' @return A list.
+#' @return A list with items "obj": the objective returned by the optimization (as a vector), 
+#' "sol": a character matrix of solutions, "r": a list where each element contains vectors of 
+#' results obtained for x and lamba vectors, and "result": the direct output returned by the 
+#' optimization (by either gurobi or lpSolve).
 #'
+#' @keywords cover, optimize
 #' @export
 #'
 #' @examples
@@ -26,11 +30,24 @@ computeMinimalCovering <- function(mat, alpha=0.05, maxsol=100, J=1){
   # check: 
   
   # 0 <= alpha < 1
+  if(alpha < 0 || alpha >= 1)
+    stop("ERROR: alpha should be in the [0, 1) interval")
   
   # maxsol, integer, > 0
+  if( ! (maxsol > 0 && (maxsol %% 1 == 0)) )
+    stop("ERROR: maxsol should be a positive integer")
   
   # J > 0, integer
+  if( ! (J > 0 && (J %% 1 == 0)) )
+    stop("ERROR: J should be a positive integer")
   
+  # mat should be binary, no missing values
+  if(! is.matrix(mat))
+    stop("ERROR: mat should be a matrix")
+  else if(any(is.na(mat)))
+    stop("ERROR: mat cannot have missing values")
+  else if(! all(sort(unique(as.vector(mat))) == c(0, 1)))
+    stop("ERROR: mat must be binary")
   
 	getCovering(mat=mat, alpha=alpha, maxsol=maxsol, J=J)
   
