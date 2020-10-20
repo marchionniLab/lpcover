@@ -1,0 +1,61 @@
+---
+title: 'Performing Covering Analysis'
+author: Wikum Dinalankara, Qian Ke, Luigi Marchionni
+header-includes:
+   - \usepackage{tabularx, longtable, graphicx, csquotes, hyperref, color, url}
+output:
+  pdf_document:
+    toc: true
+    number_sections: true
+vignette: >
+  %\VignetteIndexEntry{Performing Divergence Analysis}
+  %\VignetteEngine{knitr}
+  \usepackage[utf8]{inputenc}
+---
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+
+```
+
+\section{Introduction}
+
+Recently we introduced covering analysis, a framework for analysing high dimensional omics data. The principle behind this approach is to simulate a clinical test which tests for deviation from a normal profile as a marker of some abnormal condition. Given a matrix of high dimensional omics data (RNA-Seq expression, microarray expression, CpG level methylation, etc) where one group of samples are designated as the baseline cohort, the other sample profiles can be converted to a binary or ternary string indicating whether each omics feature of the sample is outside the baseline range or not. This can be performed at the individual feature level (in which case the result will be a string of 0, 1, and -1 indicating no divergence, deviation by being above the baseline range, and deviation by being below the baseline range, respectively), or it can be perfomed at the multivariate feature level. Multivariate features are sets of single features (e.g. a functional gene set) and if divergence analysis is performed at this level, the result will be binary (0 indicating no deviation, 1 indicating deviation). 
+
+\section{Prepare Data}
+
+The data preparation step is fairly straightforward, and involves deciding which samples will be used as the baseline, and which samples will be used as the main data that will be converted to the divergence form. 
+
+
+```{r, echo=TRUE}
+
+# load divergence package
+library(lpcover)
+
+result.optim = computeMinimalCovering(mat=mat.colon, alpha=0.9, J=2, maxsol=3)
+
+result.optim$sol
+
+```
+
+When creating the SummarizedExperiment object, use assay labeles 'data' for the original data and 'quantile' for quantile data (if the quantile transformation is being performed manually). 
+
+
+\section{Summary}
+
+The above workflows provide a concise summary of how to work with the package. Mainly, the user can use the computeUnivariateDigitization() and computeMultivariateDigitization() functions to obtain the divergence coding given a baseline data matrix and a main experimental data matrix. Otherwise, there are other functions for working at both the univariate and multivariate level for a more step by step approach to performing divergence analysis.
+
+\section{Session Information}
+
+```{r, echo=TRUE, warning=FALSE}
+
+sessionInfo()
+
+```
+
+\section{References}
+
+
+
+
+
+
