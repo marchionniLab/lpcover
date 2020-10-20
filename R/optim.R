@@ -8,6 +8,7 @@ cover_gurobi = function(mat, alpha=0.05, maxsol=100, J=1){
   if(! "gurobi" %in% names(sessionInfo()$otherPkgs)){
     
     # ERROR
+    stop("Cannot run optimization; unable to load gurobi")
     
   }
   
@@ -63,6 +64,7 @@ cover_lpSolve = function(mat, alpha=0.05, maxsol=1, J=1){
   if(! "lpSolve" %in% names(sessionInfo()$otherPkgs)){
     
     # ERROR
+    stop("Cannot run optimization; unable to load lpSolve")
     
   }
   
@@ -99,6 +101,8 @@ cover_lpSolve = function(mat, alpha=0.05, maxsol=1, J=1){
 
 
 # ==================================================================================================
+
+# main function
 
 getCovering = function(mat=mat, alpha=alpha, maxsol=maxsol, J=J){
   
