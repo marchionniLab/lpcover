@@ -4,23 +4,25 @@
 \alias{computeMinimalCovering}
 \title{Cover a proportion of a given binary set with the smallest number of features}
 \usage{
-computeMinimalCovering(mat, alpha = 0.05, maxsol = 100, J = 1)
+computeMinimalCovering(mat, alpha = 0.05, maxsol = 100, J = 1, solver = "")
 }
 \arguments{
 \item{mat}{A binary data matrix with each column corresponding to a sample and each row 
 corresponding to a feature.}
 
-\item{alpha}{A value in the [0, 1) range indicating what proportion of samples to be 
+\item{alpha}{A value in the 0 <= alpha < 1 range indicating what proportion of samples to be 
 considered as outlier. By default alpha = 0.05, indicating 95% of samples to be covered.}
 
 \item{maxsol}{The number of optimal solutions to be returned. Default is 100.}
 
 \item{J}{The number of times each sample is to be covered. By default J=1, indicating
 that each sample is to be covered with at least one feature.}
+
+\item{solver}{A character string indicating whether to use gurobi or lpSolve.}
 }
 \value{
 A list with items "obj": the objective returned by the optimization (as a vector), 
-"sol": a character matrix of solutions, "r": a list where each element contains vectors of 
+"sol": a character matrix of solutions(each column a solution), "r": a list where each element contains vectors of 
 results obtained for x and lamba vectors, and "result": the direct output returned by the 
 optimization (by either gurobi or lpSolve).
 }
@@ -29,6 +31,7 @@ Function for computing the minimal covering for a given binary data matrix given
 a minimum proportion of samples to cover
 }
 \examples{
+optim.out = computeMinimalCovering(mat=mat, alpha=0.05, maxsol=1, J=1, solver="lpSolve")
 
 }
 \keyword{cover,}
