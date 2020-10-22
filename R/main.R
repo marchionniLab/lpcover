@@ -25,7 +25,8 @@
 #' @export
 #'
 #' @examples
-#'
+#' optim.out = computeMinimalCovering(mat=mat, alpha=0.05, maxsol=1, J=1, solver="lpSolve")
+#' 
 
 computeMinimalCovering <- function(mat, alpha=0.05, maxsol=100, J=1, solver=""){
   

@@ -11,6 +11,7 @@ vignette: >
   %\VignetteIndexEntry{Performing Divergence Analysis}
   %\VignetteEngine{knitr}
   \usepackage[utf8]{inputenc}
+bibliography: lpcover.bib
 ---
 
 ```{r, echo=FALSE, message=FALSE, warning=FALSE}
@@ -19,30 +20,49 @@ vignette: >
 
 \section{Introduction}
 
-Recently we introduced covering analysis, a framework for analysing high dimensional omics data. The principle behind this approach is to simulate a clinical test which tests for deviation from a normal profile as a marker of some abnormal condition. Given a matrix of high dimensional omics data (RNA-Seq expression, microarray expression, CpG level methylation, etc) where one group of samples are designated as the baseline cohort, the other sample profiles can be converted to a binary or ternary string indicating whether each omics feature of the sample is outside the baseline range or not. This can be performed at the individual feature level (in which case the result will be a string of 0, 1, and -1 indicating no divergence, deviation by being above the baseline range, and deviation by being below the baseline range, respectively), or it can be perfomed at the multivariate feature level. Multivariate features are sets of single features (e.g. a functional gene set) and if divergence analysis is performed at this level, the result will be binary (0 indicating no deviation, 1 indicating deviation). 
+This package provides functionality to provide 'covering' solutions as presented by [@KePaired]. This is a type of binary integer programming optimization, where given a series of samples represented by binary variables, we attempt to find a small subset of the variable indices such that a required proportion of samples have at least $r$ non-zero variables from the subset.  
 
-\section{Prepare Data}
+Say we have $n$ samples $Z_i = (z_{i,g} \in \{0, 1\}), i=1..n, g \in G$. Here $G$ is a set of features. Then we would like to find the smallest set $J$ where $|J| \le |G|$ such that 
 
-The data preparation step is fairly straightforward, and involves deciding which samples will be used as the baseline, and which samples will be used as the main data that will be converted to the divergence form. 
+\[ \sum_{j \in J} z_{i,g} \ge r ~~~ \forall i, r > 0 \]
 
+where we refer to $J$ as a minial $r$-covering of the samples $Z_i$. More generally, we can require the omission of an $\alpha$ proportion of samples from being covered so that we obtain the miniaml covering solution that covers at least $1-\alpha$ proportion of samples or more.
+
+Then the optimization required is:
+
+\[ minimize ~~~ \sum_{g \in G} x_g \]
+
+such that
+
+\[ \forall i ~~~ \sum_g x_g z_{i, g} \ge ry_i \]
+\[ \sum_i y_i \ge (1-\alpha)|G| \]
+
+where $x_g$ and $y_i$ are binary variables.
+
+
+\section{Example}
+
+The package provides a function `computeMinimalCovering()` to which the user can supply a binary matrix and required `alpha` and `r` values. Given that usually multiple optimal solutions are available, the user can request upto `maxsol` number of solutions. Either `Gurobi` or `lpSolve` packages can be used for optimization (where the preferred solver can be supplied in the `solver` argument), though we highly suggest using `Gurobi`, particularly for large problems since we have found `lpSolve` not adequately efficient for solving the optimization in a timely manner.
+
+The function returns a list where the solutions are provided in a character matrix `sol`.
+
+The following code provides an example of how to use the main function:
 
 ```{r, echo=TRUE}
 
-# load divergence package
+#load package
 library(lpcover)
 
-result.optim = computeMinimalCovering(mat=mat, alpha=0.9, J=2, maxsol=3, solver="lpSolve")
+result.optim = computeMinimalCovering(mat=mat, 
+                                      alpha=0.9, 
+                                      J=2, 
+                                      maxsol=3, 
+                                      solver="gurobi")
 
 result.optim$sol
 
 ```
 
-When creating the SummarizedExperiment object, use assay labeles 'data' for the original data and 'quantile' for quantile data (if the quantile transformation is being performed manually). 
-
-
-\section{Summary}
-
-The above workflows provide a concise summary of how to work with the package. Mainly, the user can use the computeUnivariateDigitization() and computeMultivariateDigitization() functions to obtain the divergence coding given a baseline data matrix and a main experimental data matrix. Otherwise, there are other functions for working at both the univariate and multivariate level for a more step by step approach to performing divergence analysis.
 
 \section{Session Information}
 
