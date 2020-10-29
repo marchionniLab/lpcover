@@ -8,7 +8,7 @@ output:
     toc: true
     number_sections: true
 vignette: >
-  %\VignetteIndexEntry{Performing Divergence Analysis}
+  %\VignetteIndexEntry{Performing Covering Analysis}
   %\VignetteEngine{knitr}
   \usepackage[utf8]{inputenc}
 bibliography: lpcover.bib
