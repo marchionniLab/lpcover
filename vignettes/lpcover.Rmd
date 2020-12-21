@@ -56,7 +56,7 @@ library(lpcover)
 result.optim = computeMinimalCovering(mat=mat, 
                                       alpha=0.9, 
                                       J=2, 
-                                      maxsol=3, 
+                                      maxsol=2, 
                                       solver="gurobi")
 
 result.optim$sol
